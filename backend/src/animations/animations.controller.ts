@@ -1,11 +1,12 @@
 import { Controller, Get } from '@nestjs/common';
-import * as fs from 'fs';
+import { AnimationsService } from './animations.service';
 
 @Controller('api/animations')
 export class AnimationsController {
-    @Get()
-    getAnimations() {
-        const data = fs.readFileSync('animation_data.json', 'utf-8');
-        return JSON.parse(data);
-    }
+  constructor(private readonly animationsService: AnimationsService) {}
+
+  @Get()
+  getAnimations() {
+    return this.animationsService.getAllAnimations();
+  }
 }

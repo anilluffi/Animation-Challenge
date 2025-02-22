@@ -4,19 +4,10 @@ import * as path from 'path';
 
 @Injectable()
 export class AnimationsService {
-  private animations: any;
+  private readonly animationsFilePath = path.join(__dirname, 'animation_data.json');
 
-  constructor() {
-    const filePath = path.join(__dirname, '../../../animation_data.json');
-    const jsonData = fs.readFileSync(filePath, 'utf-8');
-    this.animations = JSON.parse(jsonData);
-  }
-
-  getAllAnimations() {
-    return this.animations;
-  }
-
-  getAnimationByName(name: string) {
-    return this.animations[name] || null;
+  getAllAnimations(): any {
+    const data = fs.readFileSync(this.animationsFilePath, 'utf8');
+    return JSON.parse(data);
   }
 }
