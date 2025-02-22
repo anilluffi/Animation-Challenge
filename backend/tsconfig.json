@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    
     "module": "commonjs",
     "declaration": true,
     "removeComments": true,
@@ -19,7 +20,7 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "rootDir": "./src",
-    "noFallthroughCasesInSwitch": false,
+    "noFallthroughCasesInSwitch": false
   },
-  "include": ["src", "test"]
+  "include": ["src"]
 }
