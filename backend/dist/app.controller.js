@@ -48,7 +48,7 @@ const fs = __importStar(require("fs"));
 const path = __importStar(require("path"));
 let AppController = class AppController {
     getHello() {
-        return 'Приложение работает!';
+        return 'http://localhost:3000/api/animations, http://localhost:3000/auth/register';
     }
     getAnimations() {
         const filePath = path.join(process.cwd(), 'src', 'animation_data.json');
