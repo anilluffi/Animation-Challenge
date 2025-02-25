@@ -18,7 +18,7 @@ const HomePage = () => {
     }
   }, [animation, navigate]);
 
-  const [scale, setScale] = useState(1);
+  const [scale, setScale] = useState(2);
   const [isPlaying, setIsPlaying] = useState(true);
   const [isFlipped, setIsFlipped] = useState(false);
   const spriteSheet = "/sprite_sheet.png";
@@ -32,7 +32,7 @@ const HomePage = () => {
         <h1 className="mb-5">Animation: {animation}</h1>
 
         <div
-          className="border border-1 border-dark d-inline-block"
+          className="d-inline-block mt-5"
           style={{
             transform: `scale(${scale}) ${isFlipped ? "scaleX(-1)" : ""}`,
           }}
@@ -55,9 +55,9 @@ const HomePage = () => {
         {isAuthenticated && (
           <>
             <div className="d-flex flex-wrap gap-2 p-3">
-              <button className="rounded-2" onClick={() => setScale(1)}>1x</button>
-              <button className="rounded-2" onClick={() => setScale(2)}>2x</button>
-              <button className="rounded-2" onClick={() => setScale(3)}>3x</button>
+              <button className="rounded-2" onClick={() => setScale(2)}>1x</button>
+              <button className="rounded-2" onClick={() => setScale(4)}>2x</button>
+              <button className="rounded-2" onClick={() => setScale(6)}>3x</button>
             </div>
 
             <div className="d-flex flex-wrap gap-2 p-3">
