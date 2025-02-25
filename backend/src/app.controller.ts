@@ -6,7 +6,7 @@ import * as path from 'path';
 export class AppController {
   @Get()
   getHello(): string {
-    return 'http://localhost:3000/api/animations, http://localhost:3000/auth/register';
+    return 'http://localhost:3000/api/animations';
   }
 
   @Get('api/animations')

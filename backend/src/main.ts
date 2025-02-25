@@ -5,11 +5,23 @@ import * as cors from 'cors';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // Разрешаем CORS
+  
   app.enableCors({
-    origin: 'http://localhost:3001', // Разрешаем фронтенду делать запросы
+    origin: 'http://localhost:3001',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: true, // Разрешаем кук и заголовки авторизации
+    credentials: true,
+  });
+
+  //app.setGlobalPrefix('api'); // 
+
+  // Фильтр для поддержки маршрутов (без "api/")
+  app.use((req, res, next) => {
+    if (req.url.startsWith('/api')) {
+      next();
+    } else {
+      req.url = `/api${req.url}`;
+      next();
+    }
   });
 
   await app.listen(3000);

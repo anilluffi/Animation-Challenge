@@ -9,6 +9,15 @@ async function bootstrap() {
         methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
         credentials: true,
     });
+    app.use((req, res, next) => {
+        if (req.url.startsWith('/api')) {
+            next();
+        }
+        else {
+            req.url = `/api${req.url}`;
+            next();
+        }
+    });
     await app.listen(3000);
 }
 bootstrap();

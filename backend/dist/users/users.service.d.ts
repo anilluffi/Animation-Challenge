@@ -4,5 +4,5 @@ export declare class UsersService {
     private usersRepository;
     constructor(usersRepository: Repository<User>);
     findOne(username: string): Promise<User | null>;
-    createUser(username: string, password: string): Promise<User>;
+    createUser(username: string, email: string, password: string): Promise<User>;
 }

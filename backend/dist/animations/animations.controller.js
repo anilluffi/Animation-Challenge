@@ -29,7 +29,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], AnimationsController.prototype, "getAnimations", null);
 exports.AnimationsController = AnimationsController = __decorate([
-    (0, common_1.Controller)('api/animations'),
+    (0, common_1.Controller)('animations'),
     __metadata("design:paramtypes", [animations_service_1.AnimationsService])
 ], AnimationsController);
 //# sourceMappingURL=animations.controller.js.map
