@@ -1,6 +1,14 @@
-import { Controller, Post, Body, BadRequestException, InternalServerErrorException } from '@nestjs/common';
+import { 
+  Controller, 
+  Post, 
+  Body, 
+  BadRequestException, 
+  InternalServerErrorException, 
+  UnauthorizedException 
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
+import { LoginDto } from './dto/login.dto';
 
 @Controller('api/auth')
 export class AuthController {
@@ -18,6 +26,20 @@ export class AuthController {
         throw new BadRequestException('Username or email already exists');
       }
 
+      throw new InternalServerErrorException('Something went wrong');
+    }
+  }
+
+  @Post('login')
+  async loginUser(@Body() loginDto: LoginDto) {
+    console.log('📨 Received login request:', loginDto);
+    try {
+      return await this.authService.login(loginDto);
+    } catch (error) {
+      console.error('❌ Login error:', error);
+      if (error instanceof UnauthorizedException) {
+        throw new UnauthorizedException('Invalid email or password');
+      }
       throw new InternalServerErrorException('Something went wrong');
     }
   }

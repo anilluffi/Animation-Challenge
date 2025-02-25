@@ -74,6 +74,17 @@ let AuthService = class AuthService {
         await this.usersRepository.save(newUser);
         return { message: 'User registered successfully' };
     }
+    async login(loginDto) {
+        const { email, password } = loginDto;
+        const user = await this.usersRepository.findOne({ where: { email } });
+        if (!user || !(await bcrypt.compare(password, user.password))) {
+            throw new common_1.UnauthorizedException('Invalid email or password');
+        }
+        const payload = { sub: user.id, email: user.email };
+        return {
+            access_token: this.jwtService.sign(payload),
+        };
+    }
     async validateUser(username, pass) {
         const user = await this.usersRepository.findOne({ where: { username } });
         if (!user || !(await bcrypt.compare(pass, user.password))) {

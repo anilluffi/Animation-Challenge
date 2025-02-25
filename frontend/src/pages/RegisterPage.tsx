@@ -1,24 +1,38 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-const RegisterPage = () => {
+
+const AuthPage = () => {
+  const [isRegister, setIsRegister] = useState(true);
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      setIsAuthenticated(true);
+    }
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setSuccess("");
 
-    if (!username || !email || !password) {
+    if (!email || !password || (isRegister && !username)) {
       setError("All fields are required.");
       return;
     }
 
     try {
-      const response = await fetch("http://localhost:3000/api/auth/register", {
+      const url = isRegister
+        ? "http://localhost:3000/api/auth/register"
+        : "http://localhost:3000/api/auth/login";
+
+      const response = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, email, password }),
@@ -26,52 +40,68 @@ const RegisterPage = () => {
 
       const data = await response.json();
       if (response.ok) {
-        setSuccess("Registration successful! You can now log in.");
+        if (!isRegister) {
+          localStorage.setItem("token", data.access_token);
+          setIsAuthenticated(true);
+        }
+        setSuccess(isRegister ? "Registration successful! You can now log in." : "Login successful!");
       } else {
-        setError(data.message || "Registration failed.");
+        setError(data.message || "An error occurred.");
       }
     } catch (err) {
       setError("Server error. Try again later.");
     }
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setIsAuthenticated(false);
+  };
+
   return (
-    <div style={{ textAlign: "center", padding: "20px" }}>
-      <h1>Register</h1>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      {success && <p style={{ color: "green" }}>{success}</p>}
-      <form onSubmit={handleSubmit} style={{ display: "inline-block", textAlign: "left" }}>
-        <div>
-          <label>Username:</label>
-          <input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-          />
+    <div className="container mt-5 text-center">
+      {isAuthenticated ? (
+        <button className="btn btn-danger" onClick={handleLogout}>
+          Logout
+        </button>
+      ) : (
+        <div className="card p-4 shadow-sm mx-auto" style={{ maxWidth: "400px" }}>
+          <div className="btn-group mb-3">
+            <button className={`btn ${isRegister ? "btn-primary" : "btn-outline-primary"}`} onClick={() => setIsRegister(true)}>
+              Register
+            </button>
+            <button className={`btn ${!isRegister ? "btn-primary" : "btn-outline-primary"}`} onClick={() => setIsRegister(false)}>
+              Login
+            </button>
+          </div>
+
+          <h2>{isRegister ? "Register" : "Login"}</h2>
+          {error && <p className="text-danger">{error}</p>}
+          {success && <p className="text-success">{success}</p>}
+
+          <form onSubmit={handleSubmit} className="text-start">
+            {isRegister && (
+              <div className="mb-3">
+                <label className="form-label">Username:</label>
+                <input type="text" className="form-control" value={username} onChange={(e) => setUsername(e.target.value)} required />
+              </div>
+            )}
+            <div className="mb-3">
+              <label className="form-label">Email:</label>
+              <input type="email" className="form-control" value={email} onChange={(e) => setEmail(e.target.value)} required />
+            </div>
+            <div className="mb-3">
+              <label className="form-label">Password:</label>
+              <input type="password" className="form-control" value={password} onChange={(e) => setPassword(e.target.value)} required />
+            </div>
+            <button type="submit" className="btn btn-success w-100">
+              {isRegister ? "Register" : "Login"}
+            </button>
+          </form>
         </div>
-        <div>
-          <label>Email:</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <label>Password:</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
-        <button type="submit">Register</button>
-      </form>
+      )}
     </div>
   );
 };
 
-export default RegisterPage;
+export default AuthPage;

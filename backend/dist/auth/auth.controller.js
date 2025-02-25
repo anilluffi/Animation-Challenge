@@ -16,6 +16,7 @@ exports.AuthController = void 0;
 const common_1 = require("@nestjs/common");
 const auth_service_1 = require("./auth.service");
 const register_dto_1 = require("./dto/register.dto");
+const login_dto_1 = require("./dto/login.dto");
 let AuthController = class AuthController {
     authService;
     constructor(authService) {
@@ -34,6 +35,19 @@ let AuthController = class AuthController {
             throw new common_1.InternalServerErrorException('Something went wrong');
         }
     }
+    async loginUser(loginDto) {
+        console.log('📨 Received login request:', loginDto);
+        try {
+            return await this.authService.login(loginDto);
+        }
+        catch (error) {
+            console.error('❌ Login error:', error);
+            if (error instanceof common_1.UnauthorizedException) {
+                throw new common_1.UnauthorizedException('Invalid email or password');
+            }
+            throw new common_1.InternalServerErrorException('Something went wrong');
+        }
+    }
 };
 exports.AuthController = AuthController;
 __decorate([
@@ -43,6 +57,13 @@ __decorate([
     __metadata("design:paramtypes", [register_dto_1.RegisterDto]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "registerUser", null);
+__decorate([
+    (0, common_1.Post)('login'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [login_dto_1.LoginDto]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "loginUser", null);
 exports.AuthController = AuthController = __decorate([
     (0, common_1.Controller)('api/auth'),
     __metadata("design:paramtypes", [auth_service_1.AuthService])
